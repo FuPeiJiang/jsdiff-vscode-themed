@@ -98,17 +98,19 @@ function vscodeDiff(rootElement) {
   // 0x32564B, 1051, 314
   // 0x4B5632, 1044, 265
   const theEmSize = 1.27
-  const removedHighlight = document.createElement('div')
-  removedHighlight.style.position = 'absolute'
-  // removedHighlight.style.position = "relative"
-  removedHighlight.style.backgroundColor = '#4B1818'
-  // const topOffSetUnit = 18.18
-  removedHighlight.style.height = `${theEmSize}em`
-  // removedHighlight.style.height = `${topOffSetUnit}px`
+  const baseDiv = document.createElement('div')
+  // baseDiv.style.position = 'absolute'
+  baseDiv.style.position = "relative"
 
-  // removedHighlight.style.height = '18.18px'
-  removedHighlight.style.width = '100%'
-  removedHighlight.style.zIndex = 0
+  // const topOffSetUnit = 18.18
+  // baseDiv.style.height = `${theEmSize}em`
+  baseDiv.style.height = `${topOffSetUnit}px`
+
+  // baseDiv.style.height = '18.18px'
+  baseDiv.style.width = '100%'
+  baseDiv.style.zIndex = 0
+  const removedHighlight = baseDiv.cloneNode()
+  removedHighlight.style.backgroundColor = '#4B1818'
   // removedHighlight.style.fontFamily = 'Segoe WPC,Segoe UI,sans-serif'
 
   // removedHighlight.style.textSizeAdjust = "100%"
@@ -118,7 +120,7 @@ function vscodeDiff(rootElement) {
   // removedHighlight.style.fontSize = "13px"
   // 8.8 x 19
   // 8.81 x 18.18
-  const diagonalFill = removedHighlight.cloneNode()
+  const diagonalFill = baseDiv.cloneNode()
   diagonalFill.style.backgroundImage = `linear-gradient(
   -45deg,
   rgba(204, 204, 204, 0.2) 12.5%,
@@ -139,13 +141,24 @@ function vscodeDiff(rootElement) {
   function getTop(num) {
     return `${num * theEmSize}em`
   }
+  function getWidth(num) {
+    return `${num * topOffSetUnit}px`
+  }
+  function doCurrentLineDiv(howManyFound) {
+    for (let i = 0, howManyFoundMOne = howManyFound - 1; i < howManyFoundMOne; i++) {
+      fragment1.appendChild(baseDiv.cloneNode())
+    }
+    currentLineDiv = baseDiv.cloneNode()
+  }
   let lineNumber = 0
   let alreadyHighlighted = false
   //red
   const fragment1 = document.createDocumentFragment()
+  let currentLineDiv = baseDiv.cloneNode()
   diff.forEach((part) => {
     const text = part.value
-    const span = theSpan.cloneNode()
+    // const span = theSpan.cloneNode()
+    // span.appendChild(document.createTextNode(text))
     // span.style.top = `${lineNumber * topOffSetUnit}px`
     if (part.removed) {
       span.style.backgroundColor = '#6F1313'
@@ -165,32 +178,50 @@ function vscodeDiff(rootElement) {
         fragment1.appendChild(highlight)
       }
     } else if (part.added) {
+      const lineContainer = baseDiv.cloneNode()
       const howManyFound = occurrences(text, '\n')
       if (howManyFound) {
+        lineContainer.style.height = getWidth(howManyFound + 1)
         lineNumber += howManyFound + 1
         // const highlight = diagonalFill.cloneNode()
         // highlight.style.top = getTop(howManyFound)
         // highlight.style.height = `${howManyFound * topOffSetUnit}px`
         // fragment1.appendChild(highlight)
       }
+      lineContainer.appendChild(span)
+      fragment1.appendChild(lineContainer)
     } else {
       // span.style.backgroundColor = '#373D29'
-      const howManyFound = occurrences(text, '\n')
-      if (howManyFound) {
-        // lineNumber += howManyFound + 1
-        lineNumber += howManyFound
+      // const howManyFound = occurrences(text, '\n')
+      const splitByNewline = text.split('\n')
+      let len = splitByNewline.length
+      //assume text is NOT empty
+      if (text[text.length - 1] === '\n') {
+        len--
       }
+      let tSpan = theSpan.cloneNode()
+      tSpan.appendChild(document.createTextNode(splitByNewline[0]))
+      currentLineDiv.appendChild(tSpan)
+      if (len - 1) {
+        lineNumber += len - 1
+        for (let i = 1; i < len; i++) {
+          fragment1.appendChild(currentLineDiv)
+          currentLineDiv = removedHighlight.cloneNode()
+          const tSpan = theSpan.cloneNode()
+          tSpan.appendChild(document.createTextNode(splitByNewline[i]))
+          currentLineDiv.appendChild(tSpan)
+        }
+        // doCurrentLineDiv(howManyFound)
+      }
+      // fragment1.appendChild(currentLineDiv)
     }
-
-    span.appendChild(document.createTextNode(text))
-
-    fragment1.appendChild(span)
+    // fragment1.appendChild(span)
   })
 
   pre1.appendChild(fragment1)
   rootElement.appendChild(document.createDocumentFragment().appendChild(pre1))
   throw 234
-  const addedHighlight = removedHighlight.cloneNode()
+  const addedHighlight = baseDiv.cloneNode()
   addedHighlight.style.backgroundColor = '#373D29'
 
   lineNumber = 0
