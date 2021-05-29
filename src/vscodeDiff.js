@@ -43,8 +43,8 @@ function vscodeDiff(rootElement) {
   {type:'2operator', text:':=', i1:0, c1:1, c2:3},
   ]` */
 
-  rootElement.style.backgroundColor = "#1e1e1e"
-  // document.body.style.backgroundColor = "#1e1e1e"
+  // rootElement.style.backgroundColor = "#1e1e1e"
+  document.body.style.backgroundColor = "#1e1e1e"
 
   let span = null
 
@@ -62,6 +62,7 @@ function vscodeDiff(rootElement) {
   // pre1.style.width = '49vw'
   pre1.style.width = '50%'
   pre1.style.display = 'inline-block'
+  // pre1.style.backgroundColor = "#1e1e1e"
   const pre2 = pre1.cloneNode()
 
   // fragment = document.createDocumentFragment()
@@ -81,8 +82,9 @@ function vscodeDiff(rootElement) {
   // theSpan.style.fontWeight = 400
   // theSpan.style.color = "rgb(212, 212, 212)"
   theSpan.style.color = "#d4d4d4"
+  // theSpan.style.position = "absolute"
   theSpan.style.position = "relative"
-  theSpan.style.display = "inline-block"
+  // theSpan.style.display = "inline-block"
   // theSpan.style.verticalAlign = "bottom"
   theSpan.style.whiteSpace = "no-wrap"
   theSpan.style.height = "17px"
@@ -95,13 +97,14 @@ function vscodeDiff(rootElement) {
   // theSpan.style.position = "absolute"
   // 0x32564B, 1051, 314
   // 0x4B5632, 1044, 265
-
+  const theEmSize = 1.27
   const removedHighlight = document.createElement('div')
   removedHighlight.style.position = 'absolute'
   // removedHighlight.style.position = "relative"
   removedHighlight.style.backgroundColor = '#4B1818'
   // const topOffSetUnit = 18.18
-  removedHighlight.style.height = `${topOffSetUnit}px `
+  removedHighlight.style.height = `${theEmSize}em`
+  // removedHighlight.style.height = `${topOffSetUnit}px`
 
   // removedHighlight.style.height = '18.18px'
   removedHighlight.style.width = '100%'
@@ -127,70 +130,66 @@ function vscodeDiff(rootElement) {
   diagonalFill.style.backgroundColor = '#1e1e1e'
   diagonalFill.style.color = '#d4d4d4'
   diagonalFill.style.zIndex = 3
-  diagonalFill.style.position = "relative"
+  // diagonalFill.style.position = "relative"
 
   // background-image: linear-gradient( 
   // -45deg
   // , rgba(204, 204, 204, 0.2) 12.5%, #0000 12.5%, #0000 50%, rgba(204, 204, 204, 0.2) 50%, rgba(204, 204, 204, 0.2) 62.5%, #0000 62.5%, #0000 100% );
   // background-size: 8px 8px;
-
+  function getTop(num) {
+    return `${num * theEmSize}em`
+  }
   let lineNumber = 0
   let alreadyHighlighted = false
   //red
   const fragment1 = document.createDocumentFragment()
   diff.forEach((part) => {
     const text = part.value
-    if (part.added) {
+    const span = theSpan.cloneNode()
+    // span.style.top = `${lineNumber * topOffSetUnit}px`
+    if (part.removed) {
+      span.style.backgroundColor = '#6F1313'
+      const highlight = removedHighlight.cloneNode()
+      highlight.style.top = getTop(lineNumber)
+      // highlight.style.top = `${lineNumber * topOffSetUnit}px`
+      fragment1.appendChild(highlight)
+      let howManyFound = occurrences(text, '\n')
+      if (text.slice(-1) === '\n') {
+        howManyFound--
+      }
+      for (let i = 0; i < howManyFound; i++) {
+        lineNumber++
+        const highlight = removedHighlight.cloneNode()
+        highlight.style.top = getTop(lineNumber)
+        // highlight.style.top = `${lineNumber * topOffSetUnit}px`
+        fragment1.appendChild(highlight)
+      }
+    } else if (part.added) {
       const howManyFound = occurrences(text, '\n')
       if (howManyFound) {
         lineNumber += howManyFound + 1
-        const highlight = diagonalFill.cloneNode()
-        highlight.style.height = `${howManyFound * topOffSetUnit}px`
-        fragment1.appendChild(highlight)
+        // const highlight = diagonalFill.cloneNode()
+        // highlight.style.top = getTop(howManyFound)
+        // highlight.style.height = `${howManyFound * topOffSetUnit}px`
+        // fragment1.appendChild(highlight)
       }
-
     } else {
-      const span = theSpan.cloneNode()
-      if (part.removed) {
-        span.style.backgroundColor = '#6F1313'
-        const highlight = removedHighlight.cloneNode()
-        highlight.style.top = `${lineNumber * topOffSetUnit}px`
-        const highlight2 = removedHighlight.cloneNode()
-        highlight2.style.top = "0px"
-        highlight2.style.left = "0px"
-        highlight.appendChild(highlight2)
-        fragment1.appendChild(highlight)
-        let howManyFound = occurrences(text, '\n')
-        if (text.slice(-1) === '\n') {
-          howManyFound--
-        }
-        for (let i = 0; i < howManyFound; i++) {
-          lineNumber++
-          const highlight = removedHighlight.cloneNode()
-          highlight.style.top = `${lineNumber * topOffSetUnit}px`
-          const highlight2 = removedHighlight.cloneNode()
-          highlight2.style.top = "0px"
-          highlight2.style.left = "0px"
-          highlight.appendChild(highlight2)
-          fragment1.appendChild(highlight)
-        }
-
-      } else {
-        // span.style.backgroundColor = '#373D29'
-        const howManyFound = occurrences(text, '\n')
-        if (howManyFound) {
-          lineNumber += howManyFound
-        }
+      // span.style.backgroundColor = '#373D29'
+      const howManyFound = occurrences(text, '\n')
+      if (howManyFound) {
+        // lineNumber += howManyFound + 1
+        lineNumber += howManyFound
       }
-
-      span.appendChild(document.createTextNode(text))
-
-      fragment1.appendChild(span)
     }
-  })
-  pre1.appendChild(fragment1)
 
-  // throw 234
+    span.appendChild(document.createTextNode(text))
+
+    fragment1.appendChild(span)
+  })
+
+  pre1.appendChild(fragment1)
+  rootElement.appendChild(document.createDocumentFragment().appendChild(pre1))
+  throw 234
   const addedHighlight = removedHighlight.cloneNode()
   addedHighlight.style.backgroundColor = '#373D29'
 
@@ -210,51 +209,52 @@ function vscodeDiff(rootElement) {
         // highlight.style.top = `${lineNumber * 19}px`
         fragment2.appendChild(highlight)
       }
-    } else {
+    } else if (part.added) {
 
       span = theSpan.cloneNode()
-      if (part.added) {
-        // span.style.backgroundColor = '#4ec9b0'
-        span.style.backgroundColor = '#618311'
-        // span.style.backgroundColor = '#4B5632'
-        // span.style.backgroundColor = '#32564B'
-        // span.style.backgroundColor = 'green'
+      // if (part.added) {
+      // span.style.backgroundColor = '#4ec9b0'
+      span.style.backgroundColor = '#618311'
+      // span.style.backgroundColor = '#4B5632'
+      // span.style.backgroundColor = '#32564B'
+      // span.style.backgroundColor = 'green'
 
+      const highlight = addedHighlight.cloneNode()
+      highlight.style.top = `${lineNumber * 19}px`
+      fragment2.appendChild(highlight)
+
+      let howManyFound = occurrences(text, '\n')
+      if (text.slice(-1) === '\n') {
+        howManyFound--
+      }
+      for (let i = 0; i < howManyFound; i++) {
+        lineNumber++
         const highlight = addedHighlight.cloneNode()
+        d(lineNumber)
         highlight.style.top = `${lineNumber * 19}px`
         fragment2.appendChild(highlight)
-
-        let howManyFound = occurrences(text, '\n')
-        if (text.slice(-1) === '\n') {
-          howManyFound--
-        }
-        for (let i = 0; i < howManyFound; i++) {
-          lineNumber++
-          const highlight = addedHighlight.cloneNode()
-          d(lineNumber)
-          highlight.style.top = `${lineNumber * 19}px`
-          fragment2.appendChild(highlight)
-        }
-
-      } else {
-        // span.style.backgroundColor = '#373D29'
-        const howManyFound = occurrences(text, '\n')
-        if (howManyFound) {
-          lineNumber += howManyFound
-        }
       }
 
-      span.appendChild(document
-        .createTextNode(text))
-
-
-
-      fragment2.appendChild(span)
+    } else {
+      // span.style.backgroundColor = '#373D29'
+      const howManyFound = occurrences(text, '\n')
+      if (howManyFound) {
+        lineNumber += howManyFound
+      }
     }
+
+    span.appendChild(document
+      .createTextNode(text))
+
+
+
+    fragment2.appendChild(span)
+    // }
   })
+  pre1.appendChild(fragment1)
   pre2.appendChild(fragment2)
 
-  fragmentAll = document.createDocumentFragment()
+  const fragmentAll = document.createDocumentFragment()
   fragmentAll.appendChild(pre1)
   fragmentAll.appendChild(pre2)
   rootElement.appendChild(fragmentAll)
