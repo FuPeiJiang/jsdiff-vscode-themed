@@ -1,0 +1,1 @@
+vscodeDiff(document.getElementById('vscodeDiff'))
