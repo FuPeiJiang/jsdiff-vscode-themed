@@ -136,8 +136,6 @@ function vscodeDiff(rootElement, one, other) {
   // , rgba(204, 204, 204, 0.2) 12.5%, #0000 12.5%, #0000 50%, rgba(204, 204, 204, 0.2) 50%, rgba(204, 204, 204, 0.2) 62.5%, #0000 62.5%, #0000 100% );
   // background-size: 8px 8px;
 
-  let lineNumber = 0
-  let alreadyHighlighted = false
   //red
   const fragment1 = document.createDocumentFragment()
   const fragment2 = document.createDocumentFragment()
@@ -153,32 +151,8 @@ function vscodeDiff(rootElement, one, other) {
 
   diff.forEach((part) => {
     const text = part.value
-    // const span = theSpan.cloneNode()
-    // span.appendChild(document.createTextNode(text))
-    // span.style.top = `${lineNumber * topOffSetUnit}px`
     let idx1, idx2
     if (part.removed) {
-      /*      const splitByNewline = text.split('\n')
-           let len = splitByNewline.length
-           //assume text is NOT empty
-           if (text[text.length - 1] === '\n') {
-             len--
-           }
-           redCurrentLineDiv.style.backgroundColor = '#4B1818'
-           let tDiv = redDiv.cloneNode()
-           tDiv.textContent = splitByNewline[0]
-           redCurrentLineDiv.appendChild(tDiv)
-           let tSpan
-           if (len - 1) {
-             lineNumber += len - 1
-             for (let i = 1; i < len; i++) {
-               fragment1.appendChild(redCurrentLineDiv)
-               redCurrentLineDiv = removedHighlight.cloneNode()
-               tSpan = redDiv.cloneNode()
-               tSpan.textContent = splitByNewline[i]
-               redCurrentLineDiv.appendChild(tSpan)
-             }
-           } */
       idx1 = 0
       idx2 = 1
     } else if (part.added) {
@@ -198,8 +172,6 @@ function vscodeDiff(rootElement, one, other) {
       whichCurrentLine[0].appendChild(tDiv.cloneNode(true))
       whichCurrentLine[1].appendChild(tDiv)
       if (len - 1) {
-        // lineNumber += len - 1
-
         if (howManyDiagonalLines) {
           firstFragment[diagonalIndex].appendChild(whichCurrentLine[diagonalIndex])
           whichCurrentLine[diagonalIndex] = diagonalFill.cloneNode()
@@ -236,8 +208,6 @@ function vscodeDiff(rootElement, one, other) {
     tDiv.textContent = splitByNewline[0]
     whichCurrentLine[idx1].appendChild(tDiv)
     if (lenMOne) {
-      // lineNumber += lenMOne
-
       for (let i = 1, len = lenMOne + 1; i < len; i++) {
         d(whichCurrentLine[idx1])
         firstFragment[idx1].appendChild(whichCurrentLine[idx1])
@@ -260,14 +230,11 @@ function vscodeDiff(rootElement, one, other) {
   }
   fragment1.appendChild(whichCurrentLine[0]) //push the final
   fragment2.appendChild(whichCurrentLine[1]) //push the final
-  // fragment1.appendChild(redCurrentLineDiv) //push the final
-  // fragment2.appendChild(greenCurrentLineDiv) //push the final
 
   pre1.appendChild(fragment1)
   pre2.appendChild(fragment2)
 
   rootElement.replaceChildren(pre1, pre2)
-  // rootElement.appendChild(document.createDocumentFragment().appendChild(pre1))
   return
 
 }
