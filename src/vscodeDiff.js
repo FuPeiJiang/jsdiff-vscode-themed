@@ -1,11 +1,14 @@
 function vscodeDiff(rootElement) {
   const d = console.log.bind(console)
 
-  const one = `{type:'functionName', text:'StrReplace', i1:62, c1:10, c2:20},
+const one = `{type:'functionName', text:'StrReplace', i1:62, c1:10, c2:20},
+{type:'( function CALL', text:'(', i1:62, c1:20},`
+  , other = `{text:'StrReplace('},`
+/*   const one = `{type:'functionName', text:'StrReplace', i1:62, c1:10, c2:20},
 {type:'( function CALL', text:'(', i1:62, c1:20},
 {type:'start unit'},`
   , other = `{text:'StrReplace('},
-{type:'start unit'},`
+{type:'start unit'},` */
 /*   const one = `[
     {type:'assignment', text:'v', i1:0, c1:undefined, c2:1},
     {type:'2operator', text:':=', i1:0, c1:1, c2:3},
@@ -67,6 +70,9 @@ function vscodeDiff(rootElement) {
   // pre1.style.width = '49vw'
   pre1.style.width = '50%'
   pre1.style.display = 'inline-block'
+  pre1.style.overflow = 'hidden'
+  // pre1.style.overflowX = 'hidden'
+  pre1.style.verticalAlign = 'top'
   // pre1.style.backgroundColor = "#1e1e1e"
   const pre2 = pre1.cloneNode()
 
@@ -77,12 +83,12 @@ function vscodeDiff(rootElement) {
   // 0x4B1818, 814, 169
 
   // const fragment2 = document.createDocumentFragment()
-  const topOffSetUnit = 18
+  const topOffSetUnit = 15
   const theEmSize = 1.3
 
   const theDiv = document.createElement('div')
   theDiv.style.fontFamily = 'Consolas,"Courier New",monospace'
-  theDiv.style.fontSize = "16px"
+  theDiv.style.fontSize = "14px"
   theDiv.style.color = "#d4d4d4"
   // theDiv.style.position = "absolute"
   // theDiv.style.position = "relative"
@@ -307,6 +313,12 @@ function vscodeDiff(rootElement) {
       diagonalIndex = idx2
     }
   })
+  if (howManyDiagonalLines) {
+    firstFragment[diagonalIndex].appendChild(whichCurrentLine[diagonalIndex])
+    whichCurrentLine[diagonalIndex] = diagonalFill.cloneNode()
+    whichCurrentLine[diagonalIndex].style.height = `${howManyDiagonalLines * topOffSetUnit}px`
+    howManyDiagonalLines=0
+  }
   fragment1.appendChild(whichCurrentLine[0]) //push the final
   fragment2.appendChild(whichCurrentLine[1]) //push the final
   // fragment1.appendChild(redCurrentLineDiv) //push the final
@@ -315,11 +327,9 @@ function vscodeDiff(rootElement) {
   pre1.appendChild(fragment1)
   pre2.appendChild(fragment2)
 
-  const fragmentAll = document.createDocumentFragment()
-  fragmentAll.appendChild(pre1)
-  fragmentAll.appendChild(pre2)
-  rootElement.appendChild(fragmentAll)
+  rootElement.replaceChildren(pre1, pre2)
   // rootElement.appendChild(document.createDocumentFragment().appendChild(pre1))
+  return
   throw 234
 
 
