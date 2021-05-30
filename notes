@@ -2,3 +2,8 @@ put span in div
 have a base div
 
 line by line
+
+so when 'else' has a \n
+you add the diagonalFill
+
+or when you reach end of text
