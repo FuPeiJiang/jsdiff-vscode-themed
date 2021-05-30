@@ -148,8 +148,8 @@ function vscodeDiff(rootElement, one, other) {
     , whichHighlight = [removedHighlight, addedHighlight]
   let howManyDiagonalLines = 0, diagonalIndex = 0
 
-
-  diff.forEach((part) => {
+  for (let n = 0, diffLen = diff.length; n < diffLen; n++) {
+    const part = diff[n]
     const text = part.value
     let idx1, idx2
     if (part.removed) {
@@ -179,7 +179,7 @@ function vscodeDiff(rootElement, one, other) {
           whichCurrentLine[diagonalIndex].style.height = `${howManyDiagonalLines * topOffSetUnit}px`
           // firstFragment[diagonalIndex].appendChild(whichCurrentLine[diagonalIndex])
           // whichCurrentLine[diagonalIndex] = baseHighlight.cloneNode()
-          howManyDiagonalLines=0
+          howManyDiagonalLines = 0
         }
 
         for (let i = 1; i < len; i++) {
@@ -196,7 +196,7 @@ function vscodeDiff(rootElement, one, other) {
       }
 
       // fragment1.appendChild(currentLineDiv)
-      return
+      continue
     }
     const splitByNewline = text.split('\n')
     let lenMOne = splitByNewline.length - 1
@@ -218,15 +218,15 @@ function vscodeDiff(rootElement, one, other) {
       }
 
       secondFragment[idx1].appendChild(whichCurrentLine[idx2])
-      howManyDiagonalLines+=lenMOne
+      howManyDiagonalLines += lenMOne
       diagonalIndex = idx2
     }
-  })
+  }
   if (howManyDiagonalLines) {
     firstFragment[diagonalIndex].appendChild(whichCurrentLine[diagonalIndex])
     whichCurrentLine[diagonalIndex] = diagonalFill.cloneNode()
     whichCurrentLine[diagonalIndex].style.height = `${howManyDiagonalLines * topOffSetUnit}px`
-    howManyDiagonalLines=0
+    howManyDiagonalLines = 0
   }
   fragment1.appendChild(whichCurrentLine[0]) //push the final
   fragment2.appendChild(whichCurrentLine[1]) //push the final
