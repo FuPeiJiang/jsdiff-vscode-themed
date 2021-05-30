@@ -2,7 +2,7 @@ function vscodeDiff(rootElement, one, other) {
   const d = console.log.bind(console)
 
   // rootElement.style.backgroundColor = "#1e1e1e"
-  document.body.style.backgroundColor = "#1e1e1e"
+  document.body.style.backgroundColor = '#1e1e1e'
 
   let span = null
 
@@ -18,7 +18,8 @@ function vscodeDiff(rootElement, one, other) {
   const pre1 = document.createElement('pre')
   pre1.style.position = 'relative'
   // pre1.style.width = '49vw'
-  pre1.style.width = '50%'
+  pre1.style.maxWidth = '50%'
+  // pre1.style.width = '50%'
   pre1.style.display = 'inline-block'
   pre1.style.overflow = 'hidden'
   // pre1.style.overflowX = 'hidden'
@@ -27,7 +28,7 @@ function vscodeDiff(rootElement, one, other) {
   const pre2 = pre1.cloneNode()
 
   // fragment = document.createDocumentFragment()
-  // d(diff)
+  d(diff)
 
 
   // 0x4B1818, 814, 169
@@ -38,15 +39,15 @@ function vscodeDiff(rootElement, one, other) {
 
   const theDiv = document.createElement('div')
   theDiv.style.fontFamily = 'Consolas,"Courier New",monospace'
-  theDiv.style.fontSize = "14px"
-  theDiv.style.color = "#d4d4d4"
+  theDiv.style.fontSize = '14px'
+  theDiv.style.color = '#d4d4d4'
   // theDiv.style.position = "absolute"
   // theDiv.style.position = "relative"
   // theDiv.style.zIndex = 2
   theDiv.style.display = 'inline-block'
   theDiv.style.textalign = 'center'
   // theDiv.style.height = 0 //hightlight won't work
-  theDiv.style.width = "auto"
+  theDiv.style.width = 'auto'
   // theDiv.style.height = `${theEmSize}em`
   // theDiv.style.lineHeight = `${theEmSize}em`
   theDiv.style.height = `${topOffSetUnit}px`
@@ -62,17 +63,17 @@ function vscodeDiff(rootElement, one, other) {
   const theSpan = document.createElement('span')
   theSpan.style.fontFamily = 'Consolas,"Courier New",monospace'
   // theSpan.style.fontFeatureSettings = '"liga" 0, "calt" 0'
-  theSpan.style.fontSize = "14px"
-  theSpan.style.textSizeAdjust = "100%"
+  theSpan.style.fontSize = '14px'
+  theSpan.style.textSizeAdjust = '100%'
   // theSpan.style.fontWeight = 400
   // theSpan.style.color = "rgb(212, 212, 212)"
-  theSpan.style.color = "#d4d4d4"
+  theSpan.style.color = '#d4d4d4'
   // theSpan.style.position = "absolute"
-  theSpan.style.position = "relative"
+  theSpan.style.position = 'relative'
   // theSpan.style.display = "inline-block"
   // theSpan.style.verticalAlign = "bottom"
-  theSpan.style.whiteSpace = "no-wrap"
-  theSpan.style.height = "17px"
+  theSpan.style.whiteSpace = 'no-wrap'
+  theSpan.style.height = '17px'
   // theSpan.style.height = `100px`
   // theSpan.style.height = `${topOffSetUnit}px`
   // theSpan.style.lineHeight = "21.2px"
@@ -125,13 +126,13 @@ function vscodeDiff(rootElement, one, other) {
   rgba(204, 204, 204, 0.2) 50%, rgba(204, 204, 204, 0.2) 62.5%,
   #0000 62.5%, #0000 100%
 )`
-  diagonalFill.style.backgroundSize = `8px 8px`
+  diagonalFill.style.backgroundSize = '8px 8px'
   diagonalFill.style.backgroundColor = '#1e1e1e'
   diagonalFill.style.color = '#d4d4d4'
   diagonalFill.style.zIndex = 3
   // diagonalFill.style.position = "relative"
 
-  // background-image: linear-gradient( 
+  // background-image: linear-gradient(
   // -45deg
   // , rgba(204, 204, 204, 0.2) 12.5%, #0000 12.5%, #0000 50%, rgba(204, 204, 204, 0.2) 50%, rgba(204, 204, 204, 0.2) 62.5%, #0000 62.5%, #0000 100% );
   // background-size: 8px 8px;
